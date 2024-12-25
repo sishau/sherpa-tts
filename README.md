@@ -6,13 +6,21 @@
 ## 使用
 
 1. 下载模型 [vits-melo-tts-zh_en](https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-melo-tts-zh_en.tar.bz2), 解压后放入./app/models 文件夹
-    目录结构:
-	|- app
-	|	|-models
-	|	|	|- vits-melo-tts-zh_cn
-	|	|	|- config.yaml
-	|	|- app.py
-	|- logs
+
+目录结构:
+
+|- app
+
+|	|-models
+
+|	|	|- vits-melo-tts-zh_cn
+
+|	|	|- config.yaml
+
+|	|- app.py
+
+|- logs
+
 	
 ```bash
 # 
