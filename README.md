@@ -7,25 +7,25 @@
 
 1. 下载模型 [vits-melo-tts-zh_en](https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-melo-tts-zh_en.tar.bz2), 解压后放入./app/models 文件夹
 
-目录结构:
+    目录结构:
 
-|- app
+    |- app
 
-|	|-models
+    |    |-models
 
-|	|	|- vits-melo-tts-zh_cn
+    |    |    |- vits-melo-tts-zh_cn
 
-|	|	|- config.yaml
+    |    |    |- config.yaml
 
-|	|- app.py
+    |    |- app.py
 
-|- logs
+    |- logs
 
-	
+
 ```bash
-# 
-docker build -t sherpa-tts .
-docker run -d -it --name sherpa-tts -p 8080:8080 -v ./app:/app -v ./logs:/logs sherpa-tts python /app/app.py
+#
+docker build -t sherpa-tts:dev .
+docker run -it --name sherpa-tts-dev -p 8080:8080 -v ./app:/app -v ./logs:/logs sherpa-tts:dev
 ```
 
 部署完成后, 可以使用 `curl -H "Content-Type: application/json" -X POST http://127.0.0.1:8080/tts -d "{\"text\": \"Hello, 文字转语音测试.\"}" -o ./test.wav` 进行测试
@@ -33,11 +33,13 @@ docker run -d -it --name sherpa-tts -p 8080:8080 -v ./app:/app -v ./logs:/logs s
 ## 接口
 ```
 # 8080/tts
+
 # method: post
+
 # 入参:
-text: str, 待转换的文字
-sid: 发音人
-speed: 朗读速度
+    text: str, 待转换的文字
+    sid: 发音人
+    speed: 朗读速度
 
 # 返回: audio/wav
 ```

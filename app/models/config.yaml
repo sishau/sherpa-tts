@@ -1,7 +1,5 @@
-{
-  module_name: "./models/vits-melo-tts-zh_en/model.onnx",
-  lexicon: "./models/vits-melo-tts-zh_en/lexicon.txt",
-  dict_dir: "./models/vits-melo-tts-zh_en/dict",
-  tokens: "./models/vits-melo-tts-zh_en/tokens.txt",
-  rule_fsts: "./models/vits-melo-tts-zh_en/date.fst,./models/vits-melo-tts-zh_en/number.fst"
-}
+model_folder: ./models/vits-melo-tts-zh_en
+model: model.onnx
+lexicon: lexicon.txt
+dict_dir: dict
+tokens: tokens.txt

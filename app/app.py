@@ -47,41 +47,41 @@ dictConfig({
     }
 })
 
-module_config = yaml.safe_load(open(os.path.join(model_dir, "config.yaml"), "r"))
+model_config = yaml.safe_load(open(os.path.join(model_dir, "config.yaml"), "r"))
+model_dir = model_config.get("model_folder", "./models")
+model_config = {key:os.path.join(model_dir, value) for key, value in model_config.items() if key != "model_dir"}
 
 tts_config = sherpa_onnx.OfflineTtsConfig(
     model=sherpa_onnx.OfflineTtsModelConfig(
         vits=sherpa_onnx.OfflineTtsVitsModelConfig(
-            model=module_config.get("module_name", "./models/model.onnx"),
-            lexicon=module_config.get("lexicon", ""),
-            data_dir=module_config.get("data_dir", ""),
-            dict_dir=module_config.get("dict_dir", ""),
-            tokens=module_config.get("tokens", "./models/tokens.txt"),
+            model=model_config.get("model", "./models/model.onnx"),
+            lexicon=model_config.get("lexicon", ""),
+            data_dir=model_config.get("data_dir", ""),
+            dict_dir=model_config.get("dict_dir", ""),
+            tokens=model_config.get("tokens", "./models/tokens.txt"),
         ),
         provider="cpu",
         debug=False,
-        num_threads=8,
+        num_threads=1,
     ),
-    rule_fsts=os.path.join(module_config.get("rule_fsts", "")),
+    rule_fsts=os.path.join(model_config.get("rule_fsts", "")),
     max_num_sentences=1,
 )
 if not tts_config.validate():
     raise ValueError("Please check your config")
 tts_server = sherpa_onnx.OfflineTts(tts_config)
 app = Flask(__name__)
+app.logger.info(f"model_config: {model_config}")
 
 @app.route("/tts", methods=["POST"])
 def tts():
     text = request.json.get("text", "")
     sid = request.json.get("sid", 0)
     speed = request.json.get("speed", 1.2)
-    app.logger.debug(f"tts_server.generate: {text}, {sid}, {speed}")
     app.logger.debug(f"tts config: {tts_config}")
     audio = tts_server.generate(text, sid=sid, speed=speed)
     if audio is None:
         return Response("Failed to generate speech", status=400)
-    audio_duration = len(audio.samples) / audio.sample_rate
-    app.logger.info(f"tts_server.generate: {audio_duration}")
     buffer = io.BytesIO()
     sf.write(buffer, audio.samples, samplerate=audio.sample_rate, format="WAV")
     buffer.seek(0)
